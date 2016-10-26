@@ -53,7 +53,7 @@ object Application extends Controller{
       val formattedGames = games.list.map { dbGame =>
         dbGameToFormattedGame(dbGame)
       }
-      Ok(toJson(formattedGames)).withHeaders(
+      Ok(Json.obj("games" -> toJson(formattedGames))).withHeaders(
         "Access-Control-Allow-Origin" -> "*",
         "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
