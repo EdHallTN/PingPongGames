@@ -51,9 +51,7 @@ object Application extends Controller{
   def jsonFindAll = DBAction { implicit rs =>
       //define new list, and fill it with items modeled after sender contract
       val formattedGames = games.list.map { dbGame =>
-        val players = Array(dbGame.player_1, dbGame.player_2)
-        val scores = Array(dbGame.score_1, dbGame.score_2)
-        new FormattedGame(dbGame.id, players, scores, dbGame.dateTime.substring(0,10))
+        dbGameToFormattedGame(dbGame)
       }
       Ok(toJson(formattedGames)).withHeaders(
         "Access-Control-Allow-Origin" -> "*",
@@ -69,7 +67,8 @@ object Application extends Controller{
         val dateTime = DateTime.now
         val dbGame = new DBGame(None, game.player_1, game.player_2, game.score_1, game.score_2, dateTime.toString)
         games.insert(dbGame)
-        Ok("all good, brother").withHeaders(
+        val formattedGame = dbGameToFormattedGame(dbGame)
+        Ok(toJson(formattedGame)).withHeaders(
           "Access-Control-Allow-Origin" -> "*",
           "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
@@ -87,5 +86,11 @@ object Application extends Controller{
       "Access-Control-Allow-Credentials" -> "true",
       "Access-Control-Max-Age" -> (60 * 60 * 24).toString
     )
+  }
+
+  def dbGameToFormattedGame (dbGame: DBGame): FormattedGame = {
+    val players = Array(dbGame.player_1, dbGame.player_2)
+    val scores = Array(dbGame.score_1, dbGame.score_2)
+    new FormattedGame(dbGame.id, players, scores, dbGame.dateTime.substring(0,10))
   }
 }
