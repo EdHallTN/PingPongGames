@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.3.0-2",
   "com.typesafe.play" %% "play-slick" % "0.8.1",
   "org.postgresql" % "postgresql" % "9.4-1206-jdbc4",
-  "be.cafeba" %% "play-cors" % "1.0"
+  filters
 )
 
 fork in Test := false

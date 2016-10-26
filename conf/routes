@@ -8,6 +8,9 @@
 # Home page
 #POST    /insert                     controllers.Application.insert
 
+OPTIONS    /                         controllers.Application.options(path: String ?= "")
+OPTIONS    /*path                    controllers.Application.options(path)
+
 GET     /games                       controllers.Application.jsonFindAll
 
 # Home page
