@@ -12,6 +12,7 @@ import play.api.Play.current
 import play.api.mvc.BodyParsers._
 import play.api.libs.json.Json
 import play.api.libs.json.Json._
+import assets._
 
 import scala.collection.mutable
 
@@ -48,23 +49,27 @@ object Application extends Controller{
 //    Redirect(routes.Application.index)
 //  }
 
-  def jsonFindAll = DBAction { implicit rs =>
-    //define new list, and fill it with items modeled after sender contract
-    val formattedGames = games.list.map { dbGame =>
-      val players = Array(dbGame.player_1, dbGame.player_2)
-      val scores = Array(dbGame.score_1, dbGame.score_2)
-      new FormattedGame(dbGame.id, players, scores, dbGame.dateTime.substring(0,10))
+  def jsonFindAll = WithCors("GET", "POST") {
+    DBAction { implicit rs =>
+      //define new list, and fill it with items modeled after sender contract
+      val formattedGames = games.list.map { dbGame =>
+        val players = Array(dbGame.player_1, dbGame.player_2)
+        val scores = Array(dbGame.score_1, dbGame.score_2)
+        new FormattedGame(dbGame.id, players, scores, dbGame.dateTime.substring(0,10))
+      }
+      Ok(toJson(formattedGames))
     }
-    Ok(toJson(formattedGames))
   }
 
-  def jsonInsert = DBAction(parse.json) { implicit rs =>
-    rs.request.body.validate[Game].map { game =>
+  def jsonInsert = WithCors("GET", "POST") {
+    DBAction(parse.json) { implicit rs =>
+      rs.request.body.validate[Game].map { game =>
         val dateTime = DateTime.now
         val dbGame = new DBGame(None, game.player_1, game.player_2, game.score_1, game.score_2, dateTime.toString)
         games.insert(dbGame)
         Ok("all good, brother")
-    }.getOrElse(BadRequest("invalid json"))    
+      }.getOrElse(BadRequest("invalid json"))
+    }
   }
   
 }
