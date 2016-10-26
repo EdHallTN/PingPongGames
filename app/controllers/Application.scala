@@ -55,7 +55,13 @@ object Application extends Controller{
         val scores = Array(dbGame.score_1, dbGame.score_2)
         new FormattedGame(dbGame.id, players, scores, dbGame.dateTime.substring(0,10))
       }
-      Ok(toJson(formattedGames))
+      Ok(toJson(formattedGames)).withHeaders(
+        "Access-Control-Allow-Origin" -> "*",
+        "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
+        "Access-Control-Allow-Credentials" -> "true",
+        "Access-Control-Max-Age" -> (60 * 60 * 24).toString
+      )
     }
 
   def jsonInsert = DBAction(parse.json) { implicit rs =>
@@ -63,7 +69,13 @@ object Application extends Controller{
         val dateTime = DateTime.now
         val dbGame = new DBGame(None, game.player_1, game.player_2, game.score_1, game.score_2, dateTime.toString)
         games.insert(dbGame)
-        Ok("all good, brother")
+        Ok("all good, brother").withHeaders(
+          "Access-Control-Allow-Origin" -> "*",
+          "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
+          "Access-Control-Allow-Credentials" -> "true",
+          "Access-Control-Max-Age" -> (60 * 60 * 24).toString
+        )
       }.getOrElse(BadRequest("invalid json"))
     }
 
