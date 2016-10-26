@@ -68,7 +68,7 @@ object Application extends Controller{
         val dbGame = new DBGame(None, game.player_1, game.player_2, game.score_1, game.score_2, dateTime.toString)
         games.insert(dbGame)
         val formattedGame = dbGameToFormattedGame(dbGame)
-        Ok(toJson(formattedGame)).withHeaders(
+        Ok(Json.obj("game" -> toJson(formattedGame))).withHeaders(
           "Access-Control-Allow-Origin" -> "*",
           "Access-Control-Allow-Methods" -> "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers" -> "Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With",
